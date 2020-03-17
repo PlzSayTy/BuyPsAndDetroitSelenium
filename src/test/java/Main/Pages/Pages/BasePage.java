@@ -1,0 +1,54 @@
+package Main.Pages.Pages;
+
+import Main.Pages.Init;
+import org.junit.Assert;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+public class BasePage {
+    WebDriver driver;
+
+    WebDriverWait wait;
+
+    @FindBy(xpath = "//span[contains(@class, 'cart-link__badge')]")
+    WebElement cartButton;
+    @FindBy(xpath = "//span[contains(@class, 'cart-link__price')]")
+    WebElement currentBucketPrice;
+
+    public BasePage(){
+        this.driver = Init.getDriver();
+        PageFactory.initElements(driver, this);
+        wait = new WebDriverWait(driver, 5);
+    }
+    public WebElement waitForClickable(WebElement element){
+        return wait.until(ExpectedConditions.elementToBeClickable(element));
+    }
+
+    public WebElement waitForElement(WebElement element){
+        return wait.until(ExpectedConditions.visibilityOf(element));
+    }
+
+
+    public void gotoBasket(){
+        cartButton.click();
+    }
+
+    public void assertPrice(int i){
+        String s = currentBucketPrice.getText().replace(" ", "");
+        Assert.assertEquals(i, Integer.parseInt(s));
+    }
+    public void assertGuarantee(String s){
+        int x = Integer.parseInt(s);
+        x = x * 12;
+        Assert.assertTrue(driver.findElements(By.xpath("//span[contains(text(), 'Продленная гарантия на " + x + "')]"))!=null);
+    }
+    public void restoreRemove(){
+        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@class='restore-last-removed']")));
+        driver.findElement(By.xpath("//*[@class='restore-last-removed']")).click();
+    }
+}
