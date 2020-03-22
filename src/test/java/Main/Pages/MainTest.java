@@ -20,6 +20,7 @@ public class MainTest {
 
     @Test
     public void pageObjectCU() throws InterruptedException {
+        //В первую очередь, я максимально параметризировал все методы.
         MainPage main = new MainPage();
         //Заменил поиск по предложениям из выпадающего списка на поиск сразу по странице результатов
         //Однако в любом случае строка поиска иногда залагивает
@@ -50,12 +51,6 @@ public class MainTest {
         // В таком случае метод restoreRemove поймает ошибку и предупредит о том, что тест упадёт
         basketPage.restoreRemove();
         basketPage.assertPrice(productObject.getPriceWithGuarantee()+productObject.getPriceWithGuarantee()+productObject.getPriceWithGuarantee()+detroit.getCommonPrice());
-
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
     @After
     public  void close(){
