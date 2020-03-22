@@ -1,5 +1,6 @@
 package Main.Pages.Pages;
 
+import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -18,6 +19,7 @@ public class ProductInfoPage extends BasePage{
         return Integer.parseInt(s);
     }
     public void getGuarantee(String s){
+        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[contains(@class, 'desktop-selector')]//select[contains(@class, 'form-control select')]")));
         Select select = new Select(selectElem);
         wait.until(ExpectedConditions.visibilityOf(selectElem));
         select.selectByValue(s);

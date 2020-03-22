@@ -3,6 +3,7 @@ package Main.Pages.Pages;
 import Main.Pages.Init;
 import org.junit.Assert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -14,6 +15,8 @@ public class BasePage {
     WebDriver driver;
 
     WebDriverWait wait;
+
+    JavascriptExecutor executor;
 
     @FindBy(xpath = "//span[contains(@class, 'cart-link__badge')]")
     WebElement cartButton;
@@ -39,7 +42,13 @@ public class BasePage {
     }
 
     public void assertPrice(int i){
-        String s = currentBucketPrice.getText().replace(" ", "");
+        String s;
+        try {
+             s = currentBucketPrice.getText().replace(" ", "");
+        }catch (org.openqa.selenium.StaleElementReferenceException ex){
+            s = currentBucketPrice.getText().replace(" ", "");
+        }
+        System.out.println(s);
         Assert.assertEquals(i, Integer.parseInt(s));
     }
     public void assertGuarantee(String s){
@@ -50,5 +59,12 @@ public class BasePage {
     public void restoreRemove(){
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@class='restore-last-removed']")));
         driver.findElement(By.xpath("//*[@class='restore-last-removed']")).click();
+        wait.until(ExpectedConditions.invisibilityOf(driver.findElement(By.xpath("//*[@class='restore-last-removed']"))));
+    }
+    public String getBasketPrice(){
+        String s = currentBucketPrice.getText();
+        System.out.println(s);
+        return s;
+
     }
 }

@@ -10,6 +10,7 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.sql.SQLOutput;
 import java.util.List;
 
 public class MainPage extends BasePage{
@@ -17,21 +18,29 @@ public class MainPage extends BasePage{
     WebElement searchFieldInput;
     @FindBy (xpath = "/html/body/header/nav/div/form/div")
     WebElement elementToClick;
-    @FindBy(xpath = "//a[contains(@class, 'ui-link presearch__suggest')]")
-    List<WebElement> products;
-    JavascriptExecutor executor;
     public void findWhichYouNeed(String itemTitle){
-        wait.until(ExpectedConditions.visibilityOf(products.get(0
-        )));
-        WebElement item = products.stream()
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//a[contains(@class, 'ui-link presearch__suggest')]")));
+        List<WebElement> listOfProducts = driver.findElements(By.xpath("//a[contains(@class, 'ui-link presearch__suggest')]"));
+        System.out.println(listOfProducts.get(0).getText());
+        WebElement item = listOfProducts.stream()
                 .filter(element->element.getText().contains(itemTitle))
                 .findFirst().orElseThrow(()->new RuntimeException("no element with title "+itemTitle));
         item.click();
+        listOfProducts.clear();
     }
     public void searchItem(String name){
+        waitForClickable(elementToClick);
         elementToClick.click();
+        waitForElement(searchFieldInput);
         searchFieldInput.clear();
         searchFieldInput.sendKeys(name);
         Assert.assertTrue(searchFieldInput.getAttribute("value").equals(name));
+    }
+    public void searchItemAndPressEnter(String name){
+        waitForClickable(elementToClick);
+        elementToClick.click();
+        waitForElement(searchFieldInput);
+        searchFieldInput.clear();
+        searchFieldInput.sendKeys(name+"\n");
     }
 }
