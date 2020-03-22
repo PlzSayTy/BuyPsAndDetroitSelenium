@@ -58,8 +58,12 @@ public class BasePage {
     }
     public void restoreRemove(){
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@class='restore-last-removed']")));
-        driver.findElement(By.xpath("//*[@class='restore-last-removed']")).click();
-        wait.until(ExpectedConditions.invisibilityOf(driver.findElement(By.xpath("//*[@class='restore-last-removed']"))));
+        try {
+            driver.findElement(By.xpath("//*[@class='restore-last-removed']")).click();
+            wait.until(ExpectedConditions.invisibilityOf(driver.findElement(By.xpath("//*[@class='restore-last-removed']"))));
+        }catch (org.openqa.selenium.TimeoutException te){
+            System.out.println("Кнопка вернуть товар не появилась, тест упадёт");
+        }
     }
     public String getBasketPrice(){
         String s = currentBucketPrice.getText();

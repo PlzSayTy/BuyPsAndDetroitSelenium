@@ -3,6 +3,7 @@ package Main.Pages.Pages;
 import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.function.Executable;
+import org.omg.CORBA.SystemException;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
@@ -18,16 +19,6 @@ public class MainPage extends BasePage{
     WebElement searchFieldInput;
     @FindBy (xpath = "/html/body/header/nav/div/form/div")
     WebElement elementToClick;
-    public void findWhichYouNeed(String itemTitle){
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//a[contains(@class, 'ui-link presearch__suggest')]")));
-        List<WebElement> listOfProducts = driver.findElements(By.xpath("//a[contains(@class, 'ui-link presearch__suggest')]"));
-        System.out.println(listOfProducts.get(0).getText());
-        WebElement item = listOfProducts.stream()
-                .filter(element->element.getText().contains(itemTitle))
-                .findFirst().orElseThrow(()->new RuntimeException("no element with title "+itemTitle));
-        item.click();
-        listOfProducts.clear();
-    }
     public void searchItem(String name){
         waitForClickable(elementToClick);
         elementToClick.click();
@@ -42,5 +33,13 @@ public class MainPage extends BasePage{
         waitForElement(searchFieldInput);
         searchFieldInput.clear();
         searchFieldInput.sendKeys(name+"\n");
+        try {
+            if (driver.findElement(By.xpath("//div[contains(@class, 'homepage-actual-offers-main__title'")).isDisplayed()) {
+                System.out.println("меню залагало, тест упадет");
+            }
+        }catch (org.openqa.selenium.InvalidSelectorException ise){
+            System.out.println("меню не залагало, продолжаем работу");
+        }
+
     }
 }

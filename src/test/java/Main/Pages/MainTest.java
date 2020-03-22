@@ -21,15 +21,16 @@ public class MainTest {
     @Test
     public void pageObjectCU() throws InterruptedException {
         MainPage main = new MainPage();
-        main.searchItem(productObject.getType());
-        main.findWhichYouNeed(productObject.getType());
+        //Заменил поиск по предложениям из выпадающего списка на поиск сразу по странице результатов
+        //Однако в любом случае строка поиска иногда залагивает
+        //Если это случится - метод searchItemAndPressEnter увидит ошибку и предупредит
+        main.searchItemAndPressEnter(productObject.getType());
         ResultPage resultPage = new ResultPage();
         resultPage.findWhichYouNeed(productObject.getName());
         ProductInfoPage productInfoPage = new ProductInfoPage();
         productObject.setCommonPrice(productInfoPage.rememberPrice());
         productInfoPage.getGuarantee(productObject.getGuarantee());
         productObject.setPriceWithGuarantee(productInfoPage.rememberPrice());
-        System.out.println(productObject.getPriceWithGuarantee());
         productInfoPage.buy();
         main.searchItemAndPressEnter(detroit.getType());
         detroit.setCommonPrice(productInfoPage.rememberPrice());
@@ -38,12 +39,15 @@ public class MainTest {
         productInfoPage.gotoBasket();
         productInfoPage.assertGuarantee(productObject.getGuarantee());
         BasketPage basketPage = new BasketPage();
-        basketPage.deleteFromBasket(2);
+        basketPage.deleteFromBasket(1);
         basketPage.assertPrice(productObject.getPriceWithGuarantee());
-        basketPage.addItem(1);
-        basketPage.addItem(1);
-        System.out.println(productObject.getPriceWithGuarantee());
+        // в методе addItem не придумал нормальной ожидалки
+        // пока оставлю Thread.sleep, но работы над нормальными ожиданиями будут вестись
+        basketPage.addItem(0);
+        basketPage.addItem(0);
         basketPage.assertPrice(productObject.getPriceWithGuarantee()+productObject.getPriceWithGuarantee()+productObject.getPriceWithGuarantee());
+        // Иногда на сайте не появляется кнопка "вернуть удаленный товар"
+        // В таком случае метод restoreRemove поймает ошибку и предупредит о том, что тест упадёт
         basketPage.restoreRemove();
         basketPage.assertPrice(productObject.getPriceWithGuarantee()+productObject.getPriceWithGuarantee()+productObject.getPriceWithGuarantee()+detroit.getCommonPrice());
 
